@@ -223,15 +223,27 @@ require('lazy').setup({
       },
       { 'nvim-telescope/telescope-ui-select.nvim' },
       { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
+      {
+        'nvim-telescope/telescope-live-grep-args.nvim',
+        version = '^1.1.0',
+      },
     },
     config = function()
-      require('telescope').setup {
+      local telescope = require 'telescope'
+      telescope.setup {
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
           },
         },
+        defaults = {
+          file_ignore_patterns = {
+            'node_modules',
+            'venv',
+          },
+        },
       }
+      telescope.load_extension 'live_grep_args'
 
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
@@ -261,6 +273,8 @@ require('lazy').setup({
           prompt_title = 'Live Grep in Open Files',
         }
       end, { desc = '[S]earch [/] in Open Files' })
+
+      vim.keymap.set('n', '<leader>sa', telescope.extensions.live_grep_args.live_grep_args, { desc = '[S]earch [A]ll files' })
 
       vim.keymap.set('n', '<leader>sn', function()
         builtin.find_files { cwd = vim.fn.stdpath 'config' }
@@ -384,9 +398,10 @@ require('lazy').setup({
           },
         },
 
-        pylsp = {},
         gofumpt = {},
         goimports = {},
+
+        pyright = {},
 
         lua_ls = {
           -- cmd = {...},
@@ -419,6 +434,8 @@ require('lazy').setup({
         'stylua', -- Used to format lua code
         'goimports-reviser',
         'golangci-lint',
+        'vacuum',
+        'black',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -448,8 +465,8 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         go = { 'gofumpt', 'goimports' },
+        python = { 'black' },
         -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
         --
         -- You can use a sub-list to tell conform to run *until* a formatter
         -- is found.
