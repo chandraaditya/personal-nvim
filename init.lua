@@ -45,6 +45,24 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 vim.keymap.set('n', '<leader>bg', ':!bazel run //:gazelle<CR>', { desc = 'Run Bazel Gazelle' })
 vim.keymap.set('n', '<leader>lr', ':LspRestart<CR>', { desc = 'Restart LSPs' })
 
+vim.api.nvim_create_autocmd({ 'UIEnter', 'ColorScheme' }, {
+  callback = function()
+    local normal = vim.api.nvim_get_hl(0, { name = 'Normal' })
+    if not normal.bg then
+      return
+    end
+    io.write(string.format('\027Ptmux;\027\027]11;#%06x\007\027\\', normal.bg))
+    io.write(string.format('\027]11;#%06x\027\\', normal.bg))
+  end,
+})
+
+vim.api.nvim_create_autocmd('UILeave', {
+  callback = function()
+    io.write '\027Ptmux;\027\027]111;\007\027\\'
+    io.write '\027]111\027\\'
+  end,
+})
+
 vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight when yanking (copying) text',
   group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
