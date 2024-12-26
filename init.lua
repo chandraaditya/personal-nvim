@@ -389,10 +389,10 @@ require('lazy').setup({
         sqls = {},
         tailwindcss = {},
         templ = {},
-        tsserver = {},
+        tsp_server = {},
         yamlls = {},
         protolint = {},
-        bufls = {
+        buf_ls = {
           filetypes = {
             '.proto',
           },
