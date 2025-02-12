@@ -181,7 +181,10 @@ require('lazy').setup({
       'nvim-lua/plenary.nvim',
     },
   },
-
+  {
+    'LintaoAmons/scratch.nvim',
+    event = 'VeryLazy',
+  },
   {
     'ThePrimeagen/harpoon',
     branch = 'harpoon2',
